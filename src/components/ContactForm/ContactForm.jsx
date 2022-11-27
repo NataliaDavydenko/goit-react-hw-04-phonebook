@@ -3,43 +3,44 @@ import { PhoneBook } from 'components/PhoneBook/PhoneBook';
 import { InputName } from 'components/PhoneBook/InputName';
 import { InputTel } from 'components/PhoneBook/InputTel';
 import { LabelContact } from 'components/PhoneBook/LabelContact';
-import { Component } from 'react';
+import { useState } from 'react';
 
-export class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+export const ContactForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleChange = e => {
+  const handleChange = e => {
     const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
+    if (name === 'name') {
+      setName(value);
+    }
+    if (name === 'number') {
+      setNumber(value);
+    }
   };
 
-  reset = () => {
-    this.setState({ name: '', number: '' });
+  const reset = () => {
+    setName('');
+    setNumber('');
   };
 
-  clickOnBtnAdd = e => {
+  const clickOnBtnAdd = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
-
+    onSubmit({ name, number });
+    reset();
   };
 
-  render() {
-    return (
-      <>
-        <PhoneBook onSubmit={this.clickOnBtnAdd}>
-          <LabelContact title="Name">
-            <InputName value={this.state.name} onChange={this.handleChange} />
-          </LabelContact>
-          <LabelContact title="Number">
-            <InputTel value={this.state.number} onChange={this.handleChange} />
-          </LabelContact>
-          <ButtonAdd text="Add contact" />
-        </PhoneBook>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <PhoneBook onSubmit={clickOnBtnAdd}>
+        <LabelContact title="Name">
+          <InputName value={name} onChange={handleChange} />
+        </LabelContact>
+        <LabelContact title="Number">
+          <InputTel value={number} onChange={handleChange} />
+        </LabelContact>
+        <ButtonAdd text="Add contact" />
+      </PhoneBook>
+    </>
+  );
+};
